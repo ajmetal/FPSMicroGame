@@ -13,16 +13,11 @@ namespace Unity.FPS.Game
 
     public UnityAction OnShoot;
 
-    private ObjectPool pool;
+    public ObjectPool pool;
 
-    private void Awake()
-    {
-      pool = GetComponent<ObjectPool>();
-    }
-    public void Shoot(WeaponController controller)
+    virtual public void Shoot(WeaponController controller)
     {
       Owner = controller.Owner;
-      pool = controller.gameObject.GetComponent<ObjectPool>();
       InitialPosition = transform.position;
       InitialDirection = transform.forward;
       InheritedMuzzleVelocity = controller.MuzzleWorldVelocity;
@@ -31,7 +26,7 @@ namespace Unity.FPS.Game
       OnShoot?.Invoke();
     }
 
-    protected void Deactivate()
+    virtual protected void Deactivate()
     {
       pool.ReturnObject(this);
     }

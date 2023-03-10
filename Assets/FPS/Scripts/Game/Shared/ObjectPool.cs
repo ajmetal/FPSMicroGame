@@ -16,9 +16,7 @@ namespace Unity.FPS.Game
 		{
 			for (int i = 0; i < size; ++i)
 			{
-				ProjectileBase projectile = Instantiate(prefab);
-				projectile.gameObject.SetActive(false);
-				pool.Enqueue(projectile.GetComponent<ProjectileBase>());
+				AddObject();
 			}
 		}
 
@@ -30,17 +28,29 @@ namespace Unity.FPS.Game
 			}
 		}
 
+		private void AddObject()
+		{
+			ProjectileBase projectile = Instantiate(prefab);
+			projectile.pool = this;
+			projectile.gameObject.SetActive(false);
+			pool.Enqueue(projectile.GetComponent<ProjectileBase>());
+		}
+
 		public ProjectileBase GetObject()
 		{
-			if(pool.Count > 0)
+			ProjectileBase projectile = null;
+			if (pool.Count > 0)
 			{
-				ProjectileBase proj = pool.Dequeue();
-				proj.gameObject.SetActive(true);
-				return proj;
+				projectile = pool.Dequeue();
+			}
+			else
+			{
+				AddObject();
+				projectile = pool.Dequeue();
 			}
 
-			ProjectileBase p = Instantiate(prefab);
-			return p;
+			projectile.gameObject.SetActive(true);
+			return projectile;
 
 		}
 

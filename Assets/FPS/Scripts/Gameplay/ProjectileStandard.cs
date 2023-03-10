@@ -76,22 +76,21 @@ namespace Unity.FPS.Gameplay
       m_ProjectileBase = GetComponent<ProjectileBase>();
       DebugUtility.HandleErrorIfNullGetComponent<ProjectileBase, ProjectileStandard>(m_ProjectileBase, this,
           gameObject);
-
-      m_ProjectileBase.OnShoot += OnShoot;
-
-      //Destroy(gameObject, MaxLifeTime);
-      DeactivateOnDelay(MaxLifeTime);
-
+      StartCoroutine(DeactivateOnDelay(MaxLifeTime));
     }
 
     private IEnumerator DeactivateOnDelay(float delay)
 		{
       yield return new WaitForSeconds(MaxLifeTime);
-      Deactivate();
+      if (gameObject.activeInHierarchy)
+      {
+        Deactivate();
+      }
 		}
 
-    new void OnShoot()
+    override public void Shoot(WeaponController controller)
     {
+      base.Shoot(controller);
       m_ShootTime = Time.time;
       m_LastRootPosition = Root.position;
       m_Velocity = transform.forward * Speed;
@@ -110,7 +109,6 @@ namespace Unity.FPS.Gameplay
 
         Vector3 cameraToMuzzle = (m_ProjectileBase.InitialPosition -
                                   playerWeaponsManager.WeaponCamera.transform.position);
-
         m_TrajectoryCorrectionVector = Vector3.ProjectOnPlane(-cameraToMuzzle,
             playerWeaponsManager.WeaponCamera.transform.forward);
         if (TrajectoryCorrectionDistance == 0)
@@ -274,6 +272,13 @@ namespace Unity.FPS.Gameplay
       //Destroy(this.gameObject);
       Deactivate();
     }
+
+    override protected void Deactivate()
+		{
+      
+      
+      base.Deactivate();
+		}
 
 
 

@@ -453,12 +453,12 @@ namespace Unity.FPS.Game
       for (int i = 0; i < bulletsPerShotFinal; i++)
       {
         Vector3 shotDirection = GetShotDirectionWithinSpread(WeaponMuzzle);
-        //    ProjectileBase newProjectile = Instantiate(ProjectilePrefab, WeaponMuzzle.position,
-        //Quaternion.LookRotation(shotDirection));
         ProjectileBase projectile = pool.GetObject();
-        projectile.transform.position = WeaponMuzzle.position;
-        projectile.transform.rotation = Quaternion.LookRotation(shotDirection);
-        projectile.Shoot(this);
+        projectile.transform.SetPositionAndRotation(
+          WeaponMuzzle.position, 
+          Quaternion.LookRotation(shotDirection)
+        );
+				projectile.Shoot(this);
       }
 
       // muzzle flash
